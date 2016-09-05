@@ -3,14 +3,25 @@
   <meta charset="UTF-8">
   <title>Radnom generator</title>
   <style>
-    div {
-      height: 400px;
+    .histogram {
+      height: 600px;
+    }
+    .button {
+      background-color: #2980b9;
+      border: 0px;
+      color: white;
+      display: block;
+      font-family: Arial, sans-serif;
+      font-size: 20px;
+      height: 60px;
+      margin: 0px auto;
+      width: 200px;
     }
   </style>
 </head>
 <body>
-  <button id="generate-but">Generate</button>
-  <div id="histogram"></div>
+  <button class="button" id="generate-but">Generate</button>
+  <div class="histogram" id="histogram"></div>
   <script src="./plotly-latest.min.js"></script>
   <script src="./random-generator.js"></script>
 </body>
