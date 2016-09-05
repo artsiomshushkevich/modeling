@@ -6,22 +6,33 @@
     .histogram {
       height: 600px;
     }
+    
+    button, 
+    .other-results {
+      font-family: Arial, sans-serif;
+    }
+    
     .button {
       background-color: #2980b9;
       border: 0px;
       color: white;
       display: block;
-      font-family: Arial, sans-serif;
       font-size: 20px;
       height: 60px;
-      margin: 0px auto;
+      margin: 20px auto;
       width: 200px;
+    }
+    
+    .other-results {
+      font-size: 25px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <button class="button" id="generate-but">Generate</button>
   <div class="histogram" id="histogram"></div>
+  <div class="other-results" id="other-results"></div>
   <script src="./plotly-latest.min.js"></script>
   <script src="./random-generator.js"></script>
 </body>
