@@ -5,20 +5,25 @@
   var a = 16807;
   var n = 50000;
   
-//  var r0 = 61;
-//  var m = 64;
-//  var a = 63;
-//  var n = 10;
+
+  
+//  var r0 = 1;
+//  var m = 5;
+//  var a = 3;
+//  var n = 7;
   
   var generateButton = document.querySelector('#generate-but');
   generateButton.addEventListener('click', showResults);
     
   function showResults() {
-    var arrayOfRandomNumbers = lemerFunction(r0);
+    var arrayOfRandomNumbers = getArrayOfRN(r0).map(function(rN){
+      return rN / m;
+    });
     var expectedValue = getExpectedValue(arrayOfRandomNumbers);
     var dispersion = getDispersion(expectedValue, arrayOfRandomNumbers);
     var standardDeviation = getStandardDeviation(dispersion, arrayOfRandomNumbers);
     
+    var tAndL = getTandL();
     
     var data = [{
       x: arrayOfRandomNumbers,
@@ -31,24 +36,12 @@
       <p>Expected value: ${expectedValue}</p>
       <p>Dispersion: ${dispersion}</p>
       <p>Standard deviation: ${standardDeviation}</p>
-    `;
+      <p>T: ${tAndL.T === -1 ? 'T more than N' : tAndL.T}</p>
+      <p>L: ${tAndL.L === -1 ? 'L more than 2*N - 1' : tAndL.L}</p>
+    `; 
   } 
   
-  function getPeriod(arrayOfRandomNumbers) {
-    var period = -1;
-    
-    for (var i = 0; i < arrayOfRandomNumbers.length - 1 ; i++) {
-      var indexOfOccurence = arrayOfRandomNumbers.indexOf(arrayOfRandomNumbers[i], i + 1);
 
-      if (arrayOfRandomNumbers.indexOf(arrayOfRandomNumbers[i], i + 1) !== -1) {
-        period = indexOfOccurence - i;
-        
-        return period;
-      }
-    }
-      
-    return period;  
-  }
   
   function getExpectedValue(arrayOfRandomNumbers) {
     return arrayOfRandomNumbers.reduce(function(prevValue, curValue) {
@@ -70,18 +63,65 @@
     return Math.sqrt(dispersion / arrayOfRandomNumbers.length);
   }
   
-  function lemerFunction(prevR) {
-    var arrayOfRandomNumbers = [];
+  
+  function getTandL() {
+    var arrayOfRN = getArrayOfRN(r0);
+    var rV = lemerFunction(arrayOfRN[arrayOfRN.length - 1]);
+    var rVi = rV;
+    var i = 0;
+    var tempT = -1;
+    var tempL = -1;
+    var rVt = r0;
     
-    while (n > 0) {
-      var rN = prevR * a % m;
-      var r = rN / m;
-      prevR = rN;
+    while (i < n) {
+      var rVi = lemerFunction(rVi);
+      if (rV === rVi) {
+        rVt = rVi;
+        tempT = i + 1;
+        break;
+      }
       
-      arrayOfRandomNumbers.push(r);
-      n--;
+      i++;
+    }
+    
+    i = 0;
+    rVi = r0;
+    rVt = lemerFunction(rVt);
+    
+    while (i < n) {
+      rVi = lemerFunction(rVi);
+      rVt = lemerFunction(rVt);
+      
+      if (rVi === rVt) {
+        tempL = i + tempT;
+        break;
+      }
+      
+      i++;
+    } 
+    
+    return {
+      T: tempT,
+      L: tempL
+    }
+  }
+  
+  function lemerFunction(r) {
+    return r * a % m;
+  }
+  
+  function getArrayOfRN(r) {
+    var arrayOfRandomNumbers = [];
+    var tempN = n;
+    var rN = r;
+    
+    while (tempN !== 1) {
+      rN = lemerFunction(rN);
+      arrayOfRandomNumbers.push(rN);
+      
+      tempN--;
     }
     
     return arrayOfRandomNumbers;
-  } 
+  }
 })(document, window);
