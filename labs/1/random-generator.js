@@ -1,9 +1,9 @@
 
 (function(){
-  var r0 = 2836;
-  var m = 2147483647;
-  var a = 16807;
-  var n = 50000;
+  var r0 = 1;
+  var m = 5;
+  var a = 3;
+  var n = 5;
   
 
   
@@ -25,11 +25,45 @@
     
     var tAndL = getTandL();
     
-    var data = [{
-      x: arrayOfRandomNumbers,
-      type: 'histogram'
-    }];
-    window.Plotly.newPlot('histogram', data); 
+//    var data = [{
+//      x: arrayOfRandomNumbers,
+//      type: 'histogram'
+//    }];
+//    window.Plotly.newPlot('histogram', data); 
+    
+      var arr = [['c','m']];
+      for (var i = 0; i < arrayOfRandomNumbers.length; i++) {
+        arr.push(['number', arrayOfRandomNumbers[i] ])
+      }
+      window.google.charts.load("current", {packages:["corechart"]});
+      window.google.charts.setOnLoadCallback(drawChart);
+      
+      var tickStep = 0;
+      var tempTicks = [];
+      
+      while (tickStep < 1) {
+        tempTicks.push(tickStep);
+        tickStep +=0.05;
+      }
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable(arr);
+
+        var options = {
+          title: 'data',
+          legend: { position: 'none' },
+          hAxis: {
+      ticks: tempTicks
+    },
+        
+        histogram: {
+          groupWidth: 1,
+    }
+
+        };
+
+        var chart = new google.visualization.BarChart(document.getElementById('histogram'));
+        chart.draw(data, options);
+      }
     
     var otherResultsContainer = document.querySelector('#other-results');
     otherResultsContainer.innerHTML = `
@@ -86,7 +120,7 @@
     
     i = 0;
     rVi = r0;
-    rVt = lemerFunction(rVt);
+//    rVt = lemerFunction(rVt);
     
     while (i < n) {
       rVi = lemerFunction(rVi);
