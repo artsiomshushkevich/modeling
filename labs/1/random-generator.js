@@ -3,14 +3,12 @@
   var r0 = 1;
   var m = 5;
   var a = 3;
-  var n = 5;
+  var n = 50000;
   
-
-  
-//  var r0 = 1;
-//  var m = 5;
-//  var a = 3;
-//  var n = 7;
+//  var r0 = 2836;
+//  var m = 2147483647;
+//  var a = 16807;
+//  var n = 50000;
   
   var generateButton = document.querySelector('#generate-but');
   generateButton.addEventListener('click', showResults);
@@ -25,45 +23,41 @@
     
     var tAndL = getTandL();
     
-//    var data = [{
-//      x: arrayOfRandomNumbers,
-//      type: 'histogram'
-//    }];
-//    window.Plotly.newPlot('histogram', data); 
-    
-      var arr = [['c','m']];
-      for (var i = 0; i < arrayOfRandomNumbers.length; i++) {
-        arr.push(['number', arrayOfRandomNumbers[i] ])
-      }
-      window.google.charts.load("current", {packages:["corechart"]});
-      window.google.charts.setOnLoadCallback(drawChart);
-      
-      var tickStep = 0;
-      var tempTicks = [];
-      
-      while (tickStep < 1) {
-        tempTicks.push(tickStep);
-        tickStep +=0.05;
-      }
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable(arr);
 
-        var options = {
-          title: 'data',
-          legend: { position: 'none' },
-          hAxis: {
-      ticks: tempTicks
-    },
-        
-        histogram: {
-          groupWidth: 1,
+    var histogramArray = [['c','m']];
+    var tickStep = 0;
+    while (tickStep < 1) {
+      histogramArray.push([tickStep, 0]);
+      tickStep +=0.05;
+      tickStep = +tickStep.toFixed(2);
     }
-
-        };
-
-        var chart = new google.visualization.BarChart(document.getElementById('histogram'));
-        chart.draw(data, options);
+    
+    for (var i = 0; i < arrayOfRandomNumbers.length; i++) {
+      for (var j = 1; j < histogramArray.length - 1; j++) {
+        if (arrayOfRandomNumbers[i] > histogramArray[j][0] &&
+            arrayOfRandomNumbers[i] <= histogramArray[j + 1][0]) {
+          histogramArray[j + 1][1]++;
+          break;
+        }
       }
+    }
+    
+    window.google.charts.load("current", {packages:["corechart"]});
+    window.google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable(histogramArray);
+
+      var options = {
+        title: 'histogram',
+        bar: {
+          groupWidth: '95%'
+        }
+      };
+
+      var chart = new google.visualization.ColumnChart(document.getElementById('histogram'));
+      chart.draw(data, options);
+    }
     
     var otherResultsContainer = document.querySelector('#other-results');
     otherResultsContainer.innerHTML = `
@@ -99,47 +93,46 @@
   
   
   function getTandL() {
-    var arrayOfRN = getArrayOfRN(r0);
-    var rV = lemerFunction(arrayOfRN[arrayOfRN.length - 1]);
+    var arrayOfRandomNumbers = getArrayOfRN(r0);
+    var rV = arrayOfRandomNumbers[arrayOfRandomNumbers.length - 1];
+    var index = arrayOfRandomNumbers.length;
     var rVi = rV;
-    var i = 0;
-    var tempT = -1;
-    var tempL = -1;
-    var rVt = r0;
     
-    while (i < n) {
-      var rVi = lemerFunction(rVi);
-      if (rV === rVi) {
-        rVt = rVi;
-        tempT = i + 1;
-        break;
+    while (rVi !== rV || index === arrayOfRandomNumbers.length) {
+      rVi = lemerFunction(rVi);
+      index++
+    }
+    
+    var tempT = index - arrayOfRandomNumbers.length; //t = 2147483646 for Park and Miller
+    
+    var r0i = r0;
+    var rTi = (function() {
+      var t = tempT;
+      var tempRT = r0;
+      
+      while (t > 0) {
+        tempRT = lemerFunction(tempRT);
+        t--;
       }
       
+      return tempRT;
+    })();
+    
+    var i = 0;
+    while (r0i !== rTi) {
+      r0i = lemerFunction(r0i);
+      rTi = lemerFunction(rTi);
       i++;
     }
     
-    i = 0;
-    rVi = r0;
-//    rVt = lemerFunction(rVt);
-    
-    while (i < n) {
-      rVi = lemerFunction(rVi);
-      rVt = lemerFunction(rVt);
-      
-      if (rVi === rVt) {
-        tempL = i + tempT;
-        break;
-      }
-      
-      i++;
-    } 
+    var tempL = tempT + i;
     
     return {
       T: tempT,
       L: tempL
     }
   }
-  
+
   function lemerFunction(r) {
     return r * a % m;
   }
