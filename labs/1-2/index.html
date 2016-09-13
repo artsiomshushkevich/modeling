@@ -33,19 +33,28 @@
       display: none;
     }
     
+    input[type=number],
+    label {
+      font-size: 25px;
+      width: 300px;
+    }
+    
     input[type=number] {
-      font-size: 15px;
       height: 40px;
       margin-bottom: 15px;
       padding: 10px;
-      width:300px;
-
+      width: 300px;
     }
     
     form {
       margin: 50px auto;
       padding-left: 100px;
       width: 400px;
+    }
+    
+    label {
+      display: block;
+      text-align: center;
     }
     
     form .button {
@@ -69,12 +78,18 @@
   
   <div class="container" id="second-lab-container">
     <form action="">
-      <input type="number" name="a" required>
-      <input type="number" name="b" required>
-      <button class="button" id="add-distribution-params">Generate distributions</button>
+      <label for="a">a</label>
+      <input type="number" name="a" required min="0" id="a">
+      <label for="b">b</label>
+      <input type="number" name="b" required min="0" id="b">
+      <label for="lamda">lamda</label>
+      <input type="number" name="lambda" required min="0" id="lambda">
+      <label for="nu">nu</label>
+      <input type="number" name="nu" required min="0" id="nu">
+      <button class="button" id="generate-distributions-but">Generate distributions</button>
     </form>
   </div>
-<!--  <script src="./plotly-latest.min.js"></script>-->
+  
   <script type="text/javascript" src="./google-graphics.min.js"></script>
   <script src="./random-generator.js"></script>
 </body>

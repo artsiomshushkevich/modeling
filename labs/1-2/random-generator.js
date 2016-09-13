@@ -31,21 +31,36 @@
     secondLabContainer.classList.add('active');
   });
   
+  var generateDistributionsButton = document.querySelector('#generate-distributions-but');
+  generateDistributionsButton.addEventListener('click', function() {
+    var a = +document.querySelector('#a').value;
+    var b = +document.querySelector('#b').value;
+    var lambda = +document.querySelector('#lambda').value;
+    var nu = +document.querySelector('#nu').value;
+    
+    
+    
+  });
+  
   var generateButton = document.querySelector('#generate-but');
-  generateButton.addEventListener('click', showResults);
-  
-  
-  function showResults() {
+  generateButton.addEventListener('click', function() {
     var arrayOfRandomNumbers = getArrayOfRN(r0).map(function(rN) {
       return rN / m;
     });
+    
+    showResults(arrayOfRandomNumbers, '#histogram', '#other-results', 'histogram', true)
+  });
+  
+  
+  function showResults(arrayOfRandomNumbers, histogramContainer, otherResultsContainer, histogramTitle, isFirstLab) {	  
     var expectedValue = getExpectedValue(arrayOfRandomNumbers);
     var dispersion = getDispersion(expectedValue, arrayOfRandomNumbers);
     var standardDeviation = getStandardDeviation(dispersion, arrayOfRandomNumbers);
     
-    var tAndL = getTandL();
+    if (isFirstLab) {
+      var tAndL = getTandL();
+    }
     
-
     var histogramArray = [['c','m']];
     var tickStep = 0;
     while (tickStep < 1) {
@@ -71,27 +86,25 @@
       var data = google.visualization.arrayToDataTable(histogramArray);
 
       var options = {
-        title: 'histogram',
+        title: histogramTitle,
         bar: {
           groupWidth: '95%'
         }
       };
 
-      var chart = new google.visualization.ColumnChart(document.getElementById('histogram'));
+      var chart = new google.visualization.ColumnChart(document.querySelector(histogramContainer));
       chart.draw(data, options);
     }
     
-    var otherResultsContainer = document.querySelector('#other-results');
+    var otherResultsContainer = document.querySelector(otherResultsContainer);
     otherResultsContainer.innerHTML = `
       <p>Expected value: ${expectedValue}</p>
       <p>Dispersion: ${dispersion}</p>
       <p>Standard deviation: ${standardDeviation}</p>
-      <p>T: ${tAndL.T}</p>
-      <p>L: ${tAndL.L}</p>
+      ${isFirstLab ? '<p>T:' + tAndL.T + '</p>' : ''}
+      ${isFirstLab ? '<p>L:' + tAndL.L + '</p>' : ''}
     `; 
   } 
-  
-
   
   function getExpectedValue(arrayOfRandomNumbers) {
     return arrayOfRandomNumbers.reduce(function(prevValue, curValue) {
