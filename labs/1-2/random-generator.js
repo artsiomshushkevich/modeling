@@ -10,11 +10,33 @@
 //  var a = 16807;
 //  var n = 50000;
   
+  var firstLabContainer = document.querySelector('#first-lab-container');
+  var secondLabContainer = document.querySelector('#second-lab-container');
+  
+  var firstLabButton = document.querySelector('#first-lab-but');
+  firstLabButton.addEventListener('click', function() {  
+    if (secondLabContainer.classList.contains('active')) {
+      secondLabContainer.classList.remove('active');
+    }
+    
+    firstLabContainer.classList.add('active');
+  });
+  
+  var secondlabButton = document.querySelector('#second-lab-but');
+  secondlabButton.addEventListener('click', function() {  
+    if (firstLabContainer.classList.contains('active')) {
+      firstLabContainer.classList.remove('active');
+    }
+    
+    secondLabContainer.classList.add('active');
+  });
+  
   var generateButton = document.querySelector('#generate-but');
   generateButton.addEventListener('click', showResults);
-    
+  
+  
   function showResults() {
-    var arrayOfRandomNumbers = getArrayOfRN(r0).map(function(rN){
+    var arrayOfRandomNumbers = getArrayOfRN(r0).map(function(rN) {
       return rN / m;
     });
     var expectedValue = getExpectedValue(arrayOfRandomNumbers);
@@ -64,8 +86,8 @@
       <p>Expected value: ${expectedValue}</p>
       <p>Dispersion: ${dispersion}</p>
       <p>Standard deviation: ${standardDeviation}</p>
-      <p>T: ${tAndL.T === -1 ? 'T more than N' : tAndL.T}</p>
-      <p>L: ${tAndL.L === -1 ? 'L more than 2*N - 1' : tAndL.L}</p>
+      <p>T: ${tAndL.T}</p>
+      <p>L: ${tAndL.L}</p>
     `; 
   } 
   
