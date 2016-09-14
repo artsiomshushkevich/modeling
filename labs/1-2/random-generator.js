@@ -1,17 +1,19 @@
 
 (function(){
-  var r0 = 1;
-  var m = 5;
-  var a = 3;
-  var n = 50000;
+//  var r0 = 1;
+//  var m = 5;
+//  var a = 3;
+//  var n = 5;
   
-//  var r0 = 2836;
-//  var m = 2147483647;
-//  var a = 16807;
-//  var n = 50000;
+  var r0 = 2836;
+  var m = 2147483647;
+  var a = 16807;
+  var n = 50000;
   
   var firstLabContainer = document.querySelector('#first-lab-container');
   var secondLabContainer = document.querySelector('#second-lab-container');
+  
+  window.google.charts.load("current", {packages:["corechart"]});
   
   var firstLabButton = document.querySelector('#first-lab-but');
   firstLabButton.addEventListener('click', function() {  
@@ -32,13 +34,37 @@
   });
   
   var generateDistributionsButton = document.querySelector('#generate-distributions-but');
-  generateDistributionsButton.addEventListener('click', function() {
+  generateDistributionsButton.addEventListener('click', function(event) {
+    event.preventDefault();
+
     var a = +document.querySelector('#a').value;
     var b = +document.querySelector('#b').value;
     var lambda = +document.querySelector('#lambda').value;
     var nu = +document.querySelector('#nu').value;
     
+    var arrayOfRandomNumbers = getArrayOfRN(r0).map(function(rN) {
+      return rN / m;
+    });
     
+    var expectedValue = getExpectedValue(arrayOfRandomNumbers);
+    var dispersion = getDispersion(expectedValue, arrayOfRandomNumbers);
+    var standardDeviation = getStandardDeviation(dispersion, n);
+    
+    var arrayOfRandomNumbersOfUniformDistribution = getArrayOfRandomNumbersOfUniformDistribution(a, b, arrayOfRandomNumbers);
+    var expectedValueOfUniformDistribution = (a + b) / 2 ;
+    var dispersionOfUniformDistribution = Math.pow(b - a, 2) / 12;
+    var standardDeviationOfUniformDistribution = getStandardDeviation(dispersionOfUniformDistribution, n);
+    showResults(arrayOfRandomNumbersOfUniformDistribution, expectedValueOfUniformDistribution, dispersionOfUniformDistribution,
+               standardDeviationOfUniformDistribution, '#uniform-histogram', '#uniform-other-results', 'uniform distribution', false);
+    
+    
+    var arrayOfRandomNumbersOfExponentDistribution = getArrayOfRandomnumbersOfExponentDistribution(lambda, arrayOfRandomNumbers)
+    var expectedValueOfExponentDistribution = 1 / lambda;
+    var dispersionOfExponentDistribution = 1 / Math.pow(lambda, 2);
+    var standardDeviationOfExponentDistribution = getStandardDeviation(dispersionOfExponentDistribution, n);
+    showResults(arrayOfRandomNumbersOfExponentDistribution, expectedValueOfExponentDistribution, dispersionOfExponentDistribution,
+                standardDeviationOfExponentDistribution, '#exponent-histogram', '#exponent-other-results', 'exponent distribution', false);
+      
     
   });
   
@@ -48,15 +74,16 @@
       return rN / m;
     });
     
-    showResults(arrayOfRandomNumbers, '#histogram', '#other-results', 'histogram', true)
+    var expectedValue = getExpectedValue(arrayOfRandomNumbers);
+    var dispersion = getDispersion(expectedValue, arrayOfRandomNumbers);
+    var standardDeviation = getStandardDeviation(dispersion, n);
+    
+    showResults(arrayOfRandomNumbers, expectedValue, dispersion, standardDeviation, '#histogram', '#other-results', 'histogram', true)
   });
   
   
-  function showResults(arrayOfRandomNumbers, histogramContainer, otherResultsContainer, histogramTitle, isFirstLab) {	  
-    var expectedValue = getExpectedValue(arrayOfRandomNumbers);
-    var dispersion = getDispersion(expectedValue, arrayOfRandomNumbers);
-    var standardDeviation = getStandardDeviation(dispersion, arrayOfRandomNumbers);
-    
+  function showResults(arrayOfRandomNumbers, expectedValue, dispersion, standardDeviation, 
+                       histogramContainer, otherResultsContainer, histogramTitle, isFirstLab) {	  
     if (isFirstLab) {
       var tAndL = getTandL();
     }
@@ -79,7 +106,6 @@
       }
     }
     
-    window.google.charts.load("current", {packages:["corechart"]});
     window.google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
@@ -106,6 +132,30 @@
     `; 
   } 
   
+  function getArrayOfRandomNumbersOfUniformDistribution(a, b, arrayOfRandomNumbers) {
+    return arrayOfRandomNumbers.map(function(randomNumber) {
+      return a + (b - a) * randomNumber;
+    });
+  }
+  
+  function getArrayOfRandomNumbersOfGaussDistribution(expectedValue, standardDeviation, precision, arrayOfRandomNumbers) {
+    var tempPrecision = precision;
+    var newArrayOfRandomNumbers = [];
+    var i = 0;
+    
+    
+  }
+  
+  function getArrayOfRandomnumbersOfExponentDistribution(lambda, arrayOfRandomNumbers) {
+    return arrayOfRandomNumbers.map(function(randomNumber) {
+      return -(1 / lambda) * Math.log(randomNumber);  
+    });
+  }
+  
+  function getArrayOfRandomNumbersOfGammaDistribution(lambda, nu, arrayOfRandomNumbers) {
+
+  }
+  
   function getExpectedValue(arrayOfRandomNumbers) {
     return arrayOfRandomNumbers.reduce(function(prevValue, curValue) {
       return prevValue + curValue;
@@ -122,8 +172,8 @@
     return tempDispersionSum * (1 / (arrayOfRandomNumbers.length - 1));
   }
   
-  function getStandardDeviation(dispersion, arrayOfRandomNumbers) {
-    return Math.sqrt(dispersion / arrayOfRandomNumbers.length);
+  function getStandardDeviation(dispersion, n) {
+    return Math.sqrt(dispersion / n);
   }
   
   
