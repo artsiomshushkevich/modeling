@@ -58,14 +58,26 @@
                standardDeviationOfUniformDistribution, '#uniform-histogram', '#uniform-other-results', 'uniform distribution', false);
     
     
-    var arrayOfRandomNumbersOfExponentDistribution = getArrayOfRandomnumbersOfExponentDistribution(lambda, arrayOfRandomNumbers)
+    var arrayOfRandomNumbersOfExponentDistribution = getArrayOfRandomNumbersOfExponentDistribution(lambda, arrayOfRandomNumbers)
     var expectedValueOfExponentDistribution = 1 / lambda;
     var dispersionOfExponentDistribution = 1 / Math.pow(lambda, 2);
     var standardDeviationOfExponentDistribution = getStandardDeviation(dispersionOfExponentDistribution, n);
     showResults(arrayOfRandomNumbersOfExponentDistribution, expectedValueOfExponentDistribution, dispersionOfExponentDistribution,
                 standardDeviationOfExponentDistribution, '#exponent-histogram', '#exponent-other-results', 'exponent distribution', false);
       
+    var arrayOfRandomNumbersOfGaussDistribution = getArrayOfRandomNumbersOfGaussDistribution(expectedValue, standardDeviation, arrayOfRandomNumbers);
+    var expectedValueOfGaussDistribution = getExpectedValue(arrayOfRandomNumbersOfGaussDistribution)
+    var dispersionOfGaussDistribution = getDispersion(expectedValueOfGaussDistribution, arrayOfRandomNumbersOfGaussDistribution)
+    var standardDeviationOfGaussDistribution = getStandardDeviation(dispersionOfGaussDistribution, arrayOfRandomNumbersOfGaussDistribution.length);
+    showResults(arrayOfRandomNumbersOfGaussDistribution, expectedValueOfGaussDistribution, dispersionOfGaussDistribution,
+                standardDeviationOfGaussDistribution, '#gauss-histogram', '#gauss-other-results', 'gauss distribution', false);
     
+    var arrayOfRandomNumbersOfGammaDistribution = getArrayOfRandomNumbersOfGammaDistribution(lambda, nu, arrayOfRandomNumbers);
+    var expectedValueOfGammaDistribution = getExpectedValue(arrayOfRandomNumbersOfGammaDistribution)
+    var dispersionOfGammaDistribution = getDispersion(expectedValueOfGammaDistribution, arrayOfRandomNumbersOfGammaDistribution)
+    var standardDeviationOfGammaDistribution = getStandardDeviation(dispersionOfGammaDistribution, arrayOfRandomNumbersOfGammaDistribution.length);
+    showResults(arrayOfRandomNumbersOfGammaDistribution, expectedValueOfGammaDistribution, dispersionOfGammaDistribution,
+                standardDeviationOfGammaDistribution, '#gamma-histogram', '#gamma-other-results', 'gamma distribution', false);
   });
   
   var generateButton = document.querySelector('#generate-but');
@@ -92,7 +104,7 @@
     var tickStep = 0;
     while (tickStep < 1) {
       histogramArray.push([tickStep, 0]);
-      tickStep +=0.05;
+      tickStep += 0.05;
       tickStep = +tickStep.toFixed(2);
     }
     
@@ -138,22 +150,50 @@
     });
   }
   
-  function getArrayOfRandomNumbersOfGaussDistribution(expectedValue, standardDeviation, precision, arrayOfRandomNumbers) {
-    var tempPrecision = precision;
+  function getArrayOfRandomNumbersOfGaussDistribution(expectedValue, standardDeviation, arrayOfRandomNumbers) {
     var newArrayOfRandomNumbers = [];
     var i = 0;
     
+    while (arrayOfRandomNumbers[i+5]) {
+      var gaussRandomNumber = 0;
+      
+      for (var j = 0; j < 6; j++) {
+        gaussRandomNumber += arrayOfRandomNumbers[i+j] - 3;
+      }
+      
+      gaussRandomNumber = gaussRandomNumber * Math.sqrt(2) * standardDeviation + expectedValue;
+      
+      newArrayOfRandomNumbers.push(gaussRandomNumber)
+      i += 6;
+    }
     
+    return newArrayOfRandomNumbers;
   }
   
-  function getArrayOfRandomnumbersOfExponentDistribution(lambda, arrayOfRandomNumbers) {
+  function getArrayOfRandomNumbersOfExponentDistribution(lambda, arrayOfRandomNumbers) {
     return arrayOfRandomNumbers.map(function(randomNumber) {
       return -(1 / lambda) * Math.log(randomNumber);  
     });
   }
   
   function getArrayOfRandomNumbersOfGammaDistribution(lambda, nu, arrayOfRandomNumbers) {
-
+    var newArrayOfRandomNumbers = [];
+    var i = 0;
+    
+    while (arrayOfRandomNumbers[i+nu]) {
+      var gaussRandomNumber = 1;
+      
+      for (var j = 0; j < nu; j++) {
+        gaussRandomNumber *= arrayOfRandomNumbers[i+j];
+      }
+      
+      gaussRandomNumber = - (1 / lambda) * Math.log(gaussRandomNumber);
+      
+      newArrayOfRandomNumbers.push(gaussRandomNumber)
+      i += nu;
+    }
+    
+    return newArrayOfRandomNumbers;
   }
   
   function getExpectedValue(arrayOfRandomNumbers) {
