@@ -1,14 +1,14 @@
 
 (function(){
-//  var r0 = 1;
-//  var m = 5;
-//  var a = 3;
-//  var n = 5;
+  var r0 = 1;
+  var m = 65536;
+  var a = 3;
+  var n = 70000;
   
-  var r0 = 2836;
-  var m = 2147483647;
-  var a = 16807;
-  var n = 50000;
+//  var r0 = 2836;
+//  var m = 2147483647;
+//  var a = 16807;
+//  var n = 50000;
   
   var firstLabContainer = document.querySelector('#first-lab-container');
   var secondLabContainer = document.querySelector('#second-lab-container');
@@ -78,6 +78,20 @@
     var standardDeviationOfGammaDistribution = getStandardDeviation(dispersionOfGammaDistribution, arrayOfRandomNumbersOfGammaDistribution.length);
     showResults(arrayOfRandomNumbersOfGammaDistribution, expectedValueOfGammaDistribution, dispersionOfGammaDistribution,
                 standardDeviationOfGammaDistribution, '#gamma-histogram', '#gamma-other-results', 'gamma distribution', false);
+    
+    var arrayOfRandomNumbersOfTriangleDistribution = getArrayOfRandomNumbersOfTriangleDistribution(a, b, arrayOfRandomNumbers);
+    var expectedValueOfTriangleDistribution = getExpectedValue(arrayOfRandomNumbersOfTriangleDistribution)
+    var dispersionOfTriangleDistribution = getDispersion(expectedValueOfTriangleDistribution, arrayOfRandomNumbersOfTriangleDistribution)
+    var standardDeviationOfTriangleDistribution = getStandardDeviation(dispersionOfTriangleDistribution, arrayOfRandomNumbersOfTriangleDistribution.length);
+    showResults(arrayOfRandomNumbersOfTriangleDistribution, expectedValueOfTriangleDistribution, dispersionOfTriangleDistribution,
+                standardDeviationOfTriangleDistribution, '#triangle-histogram', '#triangle-other-results', 'triangle distribution', false);
+    
+    var arrayOfRandomNumbersOfSimpsonsDistribution = getArrayOfRandomNumbersOfSimpsonsDistribution(a, b, arrayOfRandomNumbersOfUniformDistribution);
+    var expectedValueOfSimpsonsDistribution = getExpectedValue(arrayOfRandomNumbersOfSimpsonsDistribution)
+    var dispersionOfSimpsonsDistribution = getDispersion(expectedValueOfSimpsonsDistribution, arrayOfRandomNumbersOfSimpsonsDistribution)
+    var standardDeviationOfSimpsonsDistribution = getStandardDeviation(dispersionOfSimpsonsDistribution, arrayOfRandomNumbersOfSimpsonsDistribution.length);
+    showResults(arrayOfRandomNumbersOfSimpsonsDistribution, expectedValueOfSimpsonsDistribution, dispersionOfSimpsonsDistribution,
+                standardDeviationOfSimpsonsDistributionDistribution, '#simpsons-histogram', '#simpsons-other-results', 'simpsons distribution', false);
   });
   
   var generateButton = document.querySelector('#generate-but');
@@ -154,11 +168,11 @@
     var newArrayOfRandomNumbers = [];
     var i = 0;
     
-    while (arrayOfRandomNumbers[i+5]) {
+    while (arrayOfRandomNumbers[i + 5]) {
       var gaussRandomNumber = 0;
       
       for (var j = 0; j < 6; j++) {
-        gaussRandomNumber += arrayOfRandomNumbers[i+j] - 3;
+        gaussRandomNumber += arrayOfRandomNumbers[i + j] - 3;
       }
       
       gaussRandomNumber = gaussRandomNumber * Math.sqrt(2) * standardDeviation + expectedValue;
@@ -180,7 +194,7 @@
     var newArrayOfRandomNumbers = [];
     var i = 0;
     
-    while (arrayOfRandomNumbers[i+nu]) {
+    while (arrayOfRandomNumbers[i + nu]) {
       var gaussRandomNumber = 1;
       
       for (var j = 0; j < nu; j++) {
@@ -191,6 +205,44 @@
       
       newArrayOfRandomNumbers.push(gaussRandomNumber)
       i += nu;
+    }
+    
+    return newArrayOfRandomNumbers;
+  }
+  
+  function getArrayOfRandomNumbersOfTriangleDistribution(a, b, arrayOfRandomNumbers) {
+    var newArrayOfRandomNumbers = [];
+    var i = 0;
+    
+    while (arrayOfRandomNumbers[i + 2]) { 
+      if (arrayOfRandomNumbers[i + 1] < 1 - arrayOfRandomNumbers[i]) {
+        newArrayOfRandomNumbers.push(a + (b - a) * arrayOfRandomNumbers[i]);
+      }
+      
+      i += 2;
+    }
+    return newArrayOfRandomNumbers;
+  }
+  
+  function getArrayOfRandomNumbersOfSimpsonsDistribution(a, b, arrayOfRandomNumbers) {
+    var newArrayOfRandomNumbers = [];
+    var y = -1;
+    var z = -1;
+    
+    for (var i = 0; i< arrayOfRandomNumbers.length; i++) {
+      if (arrayOfRandomNumbers[i] > a / 2 && arrayOfRandomNumbers[i] < b / 2) {
+        if (y === -1) {
+          y = arrayOfRandomNumbers[i];
+        } else {
+          z = arrayOfRandomNumbers[i];
+          
+          newArrayOfRandomNumbers.push(y + z);
+          
+          y = -1;
+          z = -1;
+        }
+        
+      }
     }
     
     return newArrayOfRandomNumbers;
