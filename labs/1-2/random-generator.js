@@ -1,7 +1,7 @@
 
 (function(){
   var r0 = 1;
-  var m = 65536;
+  var m = 65000;
   var a = 3;
   var n = 70000;
   
@@ -39,59 +39,82 @@
 
     var a = +document.querySelector('#a').value;
     var b = +document.querySelector('#b').value;
-    var lambda = +document.querySelector('#lambda').value;
-    var nu = +document.querySelector('#nu').value;
     
-    var arrayOfRandomNumbers = getArrayOfRN(r0).map(function(rN) {
-      return rN / m;
-    });
+    var lambda = +document.querySelector('#lambda').value;
+    
+    var nu = +document.querySelector('#nu').value;
+    var lambdaGamma = +document.querySelector('#lambda-gamma').value;
+    
+    var mx = +document.querySelector('#mx').value;
+    var qx = +document.querySelector('#qx').value;
+    
+    
+    var aTriangle = +document.querySelector('#a-triangle').value;
+    var bTriangle = +document.querySelector('#b-triangle').value;
+    
+    var aSimpson = +document.querySelector('#a-simpson').value;
+    var bSimpson = +document.querySelector('#b-simpson').value;
+    
+    
+    var arrayOfRandomNumbers = [];
+     
+    for (var i = 0; i< 100000; i++) {
+      arrayOfRandomNumbers.push(Math.random());
+    }
     
     var expectedValue = getExpectedValue(arrayOfRandomNumbers);
     var dispersion = getDispersion(expectedValue, arrayOfRandomNumbers);
     var standardDeviation = getStandardDeviation(dispersion, n);
     
+    
     var arrayOfRandomNumbersOfUniformDistribution = getArrayOfRandomNumbersOfUniformDistribution(a, b, arrayOfRandomNumbers);
-    var expectedValueOfUniformDistribution = (a + b) / 2 ;
-    var dispersionOfUniformDistribution = Math.pow(b - a, 2) / 12;
+    var expectedValueOfUniformDistribution = getExpectedValue(arrayOfRandomNumbersOfUniformDistribution) ;
+    var dispersionOfUniformDistribution = getStandardDeviation(expectedValueOfUniformDistribution, n);
     var standardDeviationOfUniformDistribution = getStandardDeviation(dispersionOfUniformDistribution, n);
-    showResults(arrayOfRandomNumbersOfUniformDistribution, expectedValueOfUniformDistribution, dispersionOfUniformDistribution,
+    var uniformMinMax = getMinMax(arrayOfRandomNumbersOfUniformDistribution);
+    showResults(uniformMinMax.min, uniformMinMax.max, arrayOfRandomNumbersOfUniformDistribution, expectedValueOfUniformDistribution, dispersionOfUniformDistribution,
                standardDeviationOfUniformDistribution, '#uniform-histogram', '#uniform-other-results', 'uniform distribution', false);
     
     
     var arrayOfRandomNumbersOfExponentDistribution = getArrayOfRandomNumbersOfExponentDistribution(lambda, arrayOfRandomNumbers)
-    var expectedValueOfExponentDistribution = 1 / lambda;
-    var dispersionOfExponentDistribution = 1 / Math.pow(lambda, 2);
-    var standardDeviationOfExponentDistribution = getStandardDeviation(dispersionOfExponentDistribution, n);
-    showResults(arrayOfRandomNumbersOfExponentDistribution, expectedValueOfExponentDistribution, dispersionOfExponentDistribution,
+    var expectedValueOfExponentDistribution = getExpectedValue(arrayOfRandomNumbersOfExponentDistribution);
+    var dispersionOfExponentDistribution = getDispersion(expectedValueOfExponentDistribution,arrayOfRandomNumbersOfExponentDistribution);
+    var standardDeviationOfExponentDistribution = getStandardDeviation(dispersionOfExponentDistribution, arrayOfRandomNumbersOfExponentDistribution.length);
+    var exponentMinMax = getMinMax(arrayOfRandomNumbersOfExponentDistribution);
+    showResults(exponentMinMax.min, exponentMinMax.max, arrayOfRandomNumbersOfExponentDistribution, expectedValueOfExponentDistribution, dispersionOfExponentDistribution,
                 standardDeviationOfExponentDistribution, '#exponent-histogram', '#exponent-other-results', 'exponent distribution', false);
       
-    var arrayOfRandomNumbersOfGaussDistribution = getArrayOfRandomNumbersOfGaussDistribution(expectedValue, standardDeviation, arrayOfRandomNumbers);
+    var arrayOfRandomNumbersOfGaussDistribution = getArrayOfRandomNumbersOfGaussDistribution(mx, qx, arrayOfRandomNumbers);
     var expectedValueOfGaussDistribution = getExpectedValue(arrayOfRandomNumbersOfGaussDistribution)
     var dispersionOfGaussDistribution = getDispersion(expectedValueOfGaussDistribution, arrayOfRandomNumbersOfGaussDistribution)
     var standardDeviationOfGaussDistribution = getStandardDeviation(dispersionOfGaussDistribution, arrayOfRandomNumbersOfGaussDistribution.length);
-    showResults(arrayOfRandomNumbersOfGaussDistribution, expectedValueOfGaussDistribution, dispersionOfGaussDistribution,
+    var gaussMinMax = getMinMax(arrayOfRandomNumbersOfGaussDistribution);
+    showResults(gaussMinMax.min, gaussMinMax.max, arrayOfRandomNumbersOfGaussDistribution, expectedValueOfGaussDistribution, dispersionOfGaussDistribution,
                 standardDeviationOfGaussDistribution, '#gauss-histogram', '#gauss-other-results', 'gauss distribution', false);
     
-    var arrayOfRandomNumbersOfGammaDistribution = getArrayOfRandomNumbersOfGammaDistribution(lambda, nu, arrayOfRandomNumbers);
+    var arrayOfRandomNumbersOfGammaDistribution = getArrayOfRandomNumbersOfGammaDistribution(lambdaGamma, nu, arrayOfRandomNumbers);
     var expectedValueOfGammaDistribution = getExpectedValue(arrayOfRandomNumbersOfGammaDistribution)
     var dispersionOfGammaDistribution = getDispersion(expectedValueOfGammaDistribution, arrayOfRandomNumbersOfGammaDistribution)
     var standardDeviationOfGammaDistribution = getStandardDeviation(dispersionOfGammaDistribution, arrayOfRandomNumbersOfGammaDistribution.length);
-    showResults(arrayOfRandomNumbersOfGammaDistribution, expectedValueOfGammaDistribution, dispersionOfGammaDistribution,
+    var gammaMinMax = getMinMax(arrayOfRandomNumbersOfGammaDistribution);
+    showResults(gammaMinMax.min, gammaMinMax.max, arrayOfRandomNumbersOfGammaDistribution, expectedValueOfGammaDistribution, dispersionOfGammaDistribution,
                 standardDeviationOfGammaDistribution, '#gamma-histogram', '#gamma-other-results', 'gamma distribution', false);
     
-    var arrayOfRandomNumbersOfTriangleDistribution = getArrayOfRandomNumbersOfTriangleDistribution(a, b, arrayOfRandomNumbers);
+    var arrayOfRandomNumbersOfTriangleDistribution = getArrayOfRandomNumbersOfTriangleDistribution(aTriangle, bTriangle, arrayOfRandomNumbers);
     var expectedValueOfTriangleDistribution = getExpectedValue(arrayOfRandomNumbersOfTriangleDistribution)
     var dispersionOfTriangleDistribution = getDispersion(expectedValueOfTriangleDistribution, arrayOfRandomNumbersOfTriangleDistribution)
     var standardDeviationOfTriangleDistribution = getStandardDeviation(dispersionOfTriangleDistribution, arrayOfRandomNumbersOfTriangleDistribution.length);
-    showResults(arrayOfRandomNumbersOfTriangleDistribution, expectedValueOfTriangleDistribution, dispersionOfTriangleDistribution,
+    var triangleMinMax = getMinMax(arrayOfRandomNumbersOfTriangleDistribution);
+    showResults(triangleMinMax.min, triangleMinMax.max, arrayOfRandomNumbersOfTriangleDistribution, expectedValueOfTriangleDistribution, dispersionOfTriangleDistribution,
                 standardDeviationOfTriangleDistribution, '#triangle-histogram', '#triangle-other-results', 'triangle distribution', false);
     
-    var arrayOfRandomNumbersOfSimpsonsDistribution = getArrayOfRandomNumbersOfSimpsonsDistribution(a, b, arrayOfRandomNumbersOfUniformDistribution);
+    var arrayOfRandomNumbersOfSimpsonsDistribution = getArrayOfRandomNumbersOfSimpsonsDistribution(aSimpson, bSimpson, arrayOfRandomNumbersOfUniformDistribution);
     var expectedValueOfSimpsonsDistribution = getExpectedValue(arrayOfRandomNumbersOfSimpsonsDistribution)
     var dispersionOfSimpsonsDistribution = getDispersion(expectedValueOfSimpsonsDistribution, arrayOfRandomNumbersOfSimpsonsDistribution)
     var standardDeviationOfSimpsonsDistribution = getStandardDeviation(dispersionOfSimpsonsDistribution, arrayOfRandomNumbersOfSimpsonsDistribution.length);
-    showResults(arrayOfRandomNumbersOfSimpsonsDistribution, expectedValueOfSimpsonsDistribution, dispersionOfSimpsonsDistribution,
-                standardDeviationOfSimpsonsDistributionDistribution, '#simpsons-histogram', '#simpsons-other-results', 'simpsons distribution', false);
+    var simpsonsMinMax = getMinMax(arrayOfRandomNumbersOfSimpsonsDistribution);
+    showResults(simpsonsMinMax.min, simpsonsMinMax.max, arrayOfRandomNumbersOfSimpsonsDistribution, expectedValueOfSimpsonsDistribution, dispersionOfSimpsonsDistribution,
+                standardDeviationOfSimpsonsDistribution, '#simpsons-histogram', '#simpsons-other-results', 'simpsons distribution', false);
   });
   
   var generateButton = document.querySelector('#generate-but');
@@ -104,22 +127,22 @@
     var dispersion = getDispersion(expectedValue, arrayOfRandomNumbers);
     var standardDeviation = getStandardDeviation(dispersion, n);
     
-    showResults(arrayOfRandomNumbers, expectedValue, dispersion, standardDeviation, '#histogram', '#other-results', 'histogram', true)
+    showResults(0, 1, arrayOfRandomNumbers, expectedValue, dispersion, standardDeviation, '#histogram', '#other-results', 'histogram', true)
   });
   
   
-  function showResults(arrayOfRandomNumbers, expectedValue, dispersion, standardDeviation, 
+  function showResults(a, b, arrayOfRandomNumbers, expectedValue, dispersion, standardDeviation, 
                        histogramContainer, otherResultsContainer, histogramTitle, isFirstLab) {	  
     if (isFirstLab) {
       var tAndL = getTandL();
     }
     
+    var tick = (b - a) / 20;
     var histogramArray = [['c','m']];
-    var tickStep = 0;
-    while (tickStep < 1) {
+    var tickStep = a;
+    while (tickStep < b + tick) {
       histogramArray.push([tickStep, 0]);
-      tickStep += 0.05;
-      tickStep = +tickStep.toFixed(2);
+      tickStep += tick;
     }
     
     for (var i = 0; i < arrayOfRandomNumbers.length; i++) {
@@ -164,6 +187,26 @@
     });
   }
   
+  function getMinMax(arrayOfRandomNumbers) {
+    var tempMin = 1000000000;
+    var tempMax = -1000000000;
+    
+    for (var i = 0; i < arrayOfRandomNumbers.length; i++) {
+      if (tempMin > arrayOfRandomNumbers[i]) {
+        tempMin = arrayOfRandomNumbers[i]
+      }
+      
+      if (tempMax < arrayOfRandomNumbers[i]) {
+        tempMax = arrayOfRandomNumbers[i];
+      }
+    }
+    
+    return {
+      max: tempMax,
+      min: tempMin
+    }
+  }
+  
   function getArrayOfRandomNumbersOfGaussDistribution(expectedValue, standardDeviation, arrayOfRandomNumbers) {
     var newArrayOfRandomNumbers = [];
     var i = 0;
@@ -172,10 +215,10 @@
       var gaussRandomNumber = 0;
       
       for (var j = 0; j < 6; j++) {
-        gaussRandomNumber += arrayOfRandomNumbers[i + j] - 3;
+        gaussRandomNumber += arrayOfRandomNumbers[i + j];
       }
       
-      gaussRandomNumber = gaussRandomNumber * Math.sqrt(2) * standardDeviation + expectedValue;
+      gaussRandomNumber = (gaussRandomNumber - 3) * Math.sqrt(2) * standardDeviation + expectedValue;
       
       newArrayOfRandomNumbers.push(gaussRandomNumber)
       i += 6;
