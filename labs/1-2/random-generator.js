@@ -69,7 +69,7 @@
     
     var arrayOfRandomNumbersOfUniformDistribution = getArrayOfRandomNumbersOfUniformDistribution(a, b, arrayOfRandomNumbers);
     var expectedValueOfUniformDistribution = getExpectedValue(arrayOfRandomNumbersOfUniformDistribution) ;
-    var dispersionOfUniformDistribution = getStandardDeviation(expectedValueOfUniformDistribution, n);
+    var dispersionOfUniformDistribution = getDispersion(expectedValueOfUniformDistribution, arrayOfRandomNumbersOfUniformDistribution);
     var standardDeviationOfUniformDistribution = getStandardDeviation(dispersionOfUniformDistribution, n);
     var uniformMinMax = getMinMax(arrayOfRandomNumbersOfUniformDistribution);
     showResults(uniformMinMax.min, uniformMinMax.max, arrayOfRandomNumbersOfUniformDistribution, expectedValueOfUniformDistribution, dispersionOfUniformDistribution,
