@@ -1,9 +1,9 @@
 
 (function(){
   var r0 = 1;
-  var m = 65000;
+  var m = 657633;
   var a = 3;
-  var n = 70000;
+  var n = 100000;
   
 //  var r0 = 2836;
 //  var m = 2147483647;
