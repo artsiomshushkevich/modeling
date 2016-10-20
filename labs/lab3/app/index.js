@@ -1,7 +1,7 @@
 (function() {
     var p1, p2, c, t1, j, t2, amountOfSolved, amountOfMissed, amountInQueue, pOt, a, lQueue;
 
-    var AMOUNT_OF_TICKS = 200000;
+    var AMOUNT_OF_TICKS = 20000;
 
     $('#count-param-but').on('click', getParams);
     
@@ -58,11 +58,8 @@
     }
 
     function goToNextState() {
-        var tempP1 = isNotP1();
-        var tempP2 = isNotP2();
-
         if (t2 === 1) {
-            if (tempP2) {
+            if (isNotP2()) {
                 amountOfSolved++;
                 t2 = 0;
 
@@ -74,17 +71,20 @@
         }
 
         if (t1 === 1) {
-            if (tempP1) {
+            if (isNotP1()) {
                 if (j === 0) {
                     if (t2 === 0) {
                         t2 = 1;
                     } else {
                         j++;
+                       
                     }
                 } else if (j === 1) {
-                    j++;      
+                    j++;
+                      
                 } else {
                     amountOfMissed++;
+                    
                 }
                 t1 = 0;
             }
@@ -92,11 +92,9 @@
 
         c--;
 
-        if (j == 1) {
-            amountInQueue++;
-        } else if (j === 2) {
-            amountInQueue += 2;
-        } 
+      if (j > 0) {
+          amountInQueue++;
+      }
 
         if (c === 0) {
             c = 2;
