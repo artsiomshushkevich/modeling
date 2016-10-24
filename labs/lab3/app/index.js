@@ -92,8 +92,10 @@
 
         c--;
 
-      if (j > 0) {
+      if (j === 1) {
           amountInQueue++;
+      } else if (j === 2) {
+          amountInQueue += 2;
       }
 
         if (c === 0) {
