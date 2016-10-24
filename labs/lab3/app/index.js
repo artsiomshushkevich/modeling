@@ -26,7 +26,7 @@
                 goToNextState();
             }
 
-            pOt = amountOfMissed / AMOUNT_OF_TICKS;
+            pOt = 2 * amountOfMissed / AMOUNT_OF_TICKS;
 
             lQueue = amountInQueue / AMOUNT_OF_TICKS;
 
@@ -76,15 +76,13 @@
                     if (t2 === 0) {
                         t2 = 1;
                     } else {
-                        j++;
-                       
+                        j++;          
                     }
                 } else if (j === 1) {
                     j++;
                       
                 } else {
                     amountOfMissed++;
-                    
                 }
                 t1 = 0;
             }
